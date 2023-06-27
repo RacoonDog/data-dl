@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "id": "recipe-dl",
+  "version": "${version}",
+  "name": "Recipe DL",
+  "description": "Download a server's recipe data without access to the files.",
+  "authors": [ "Crosby" ],
+  "contact": {
+    "sources": "https://github.com/RacoonDog/recipe-dl",
+    "issues": "https://github.com/RacoonDog/recipe-dl/issues",
+    "discord": "https://discord.gg/4RBmBCFSTc"
+  },
+  "license": "MIT",
+  "icon": "assets/recipe-dl/icon.png",
+  "environment": "client",
+  "entrypoints": {
+    "client": [
+      "io.github.racoondog.recipedl.RecipeDL"
+    ]
+  },
+  "mixins": [
+    "recipe-dl.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.10.5",
+    "fabric-command-api-v2": "*",
+    "fabric-api-base": "*",
+    "minecraft": ">1.19-alpha.22.11.a"
+  },
+  "custom": {
+    "loom:injected_interfaces": {
+      "net/minecraft/class_1860": [ "io/github/racoondog/recipedl/util/JsonSerializable" ]
+    }
+  }
+}
