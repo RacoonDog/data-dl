@@ -15,7 +15,7 @@
   "environment": "client",
   "entrypoints": {
     "client": [
-      "io.github.racoondog.recipedl.RecipeDL"
+      "io.github.racoondog.recipedl.DataDL"
     ]
   },
   "mixins": [
