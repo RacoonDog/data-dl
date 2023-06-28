@@ -1,25 +1,25 @@
 {
   "schemaVersion": 1,
-  "id": "recipe-dl",
+  "id": "data-dl",
   "version": "${version}",
-  "name": "Recipe DL",
-  "description": "Download a server's recipe data without access to the files.",
+  "name": "Data DL",
+  "description": "Download a server's datapack json files from the client.",
   "authors": [ "Crosby" ],
   "contact": {
-    "sources": "https://github.com/RacoonDog/recipe-dl",
-    "issues": "https://github.com/RacoonDog/recipe-dl/issues",
+    "sources": "https://github.com/RacoonDog/data-dl",
+    "issues": "https://github.com/RacoonDog/data-dl/issues",
     "discord": "https://discord.gg/4RBmBCFSTc"
   },
   "license": "MIT",
-  "icon": "assets/recipe-dl/icon.png",
+  "icon": "assets/data-dl/icon.png",
   "environment": "client",
   "entrypoints": {
     "client": [
-      "io.github.racoondog.recipedl.DataDL"
+      "io.github.racoondog.datadl.DataDL"
     ]
   },
   "mixins": [
-    "recipe-dl.mixins.json"
+    "data-dl.mixins.json"
   ],
   "depends": {
     "fabricloader": ">=0.10.5",
@@ -29,7 +29,7 @@
   },
   "custom": {
     "loom:injected_interfaces": {
-      "net/minecraft/class_1860": [ "io/github/racoondog/recipedl/util/JsonSerializable" ]
+      "net/minecraft/class_1860": [ "io/github/racoondog/datadl/util/JsonSerializable" ]
     }
   }
 }

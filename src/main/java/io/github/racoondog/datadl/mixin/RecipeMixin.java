@@ -1,8 +1,8 @@
-package io.github.racoondog.recipedl.mixin;
+package io.github.racoondog.datadl.mixin;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import io.github.racoondog.recipedl.util.JsonSerializable;
+import io.github.racoondog.datadl.util.JsonSerializable;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.item.ItemStack;

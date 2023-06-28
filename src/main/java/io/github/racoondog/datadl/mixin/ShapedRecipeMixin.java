@@ -1,8 +1,8 @@
-package io.github.racoondog.recipedl.mixin;
+package io.github.racoondog.datadl.mixin;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import io.github.racoondog.recipedl.util.MutableChar;
+import io.github.racoondog.datadl.util.MutableChar;
 import it.unimi.dsi.fastutil.objects.Object2CharMap;
 import it.unimi.dsi.fastutil.objects.Object2CharOpenHashMap;
 import net.fabricmc.api.EnvType;

@@ -1,14 +1,21 @@
 <div align="center">
-  <h1>Recipe DL</h1>
-  <p>Download a server's recipe data without access to the files.</p>
+  <h1>Data DL</h1>
+  <p>Download a server's datapack json files from the client.</p>
 </div>
 
-## Usage
-`/recipe-dl run` or `/recipe-dl run {folder name}` will download the recipe data and put it in `.minecraft/recipe-dl/{folder name}`.
-If the folder already exists, you'll be prompted to run `/recipe-dl confirm` which will delete the existing folder and run normally.
+# Usage
 
-### To-do
-- Limited item tag data is available which can be downloaded.
-- Download advancements lole.
+### Advancements
+`/data-dl advancement run`  
+Can only download *known* advancements.
+
+### Recipes
+`/data-dl recipe run`
+
+### Tags
+`/data-dl tag run`  
+Only the *raw values* are given, references to other tags and optional non-present values are removed.  
+Cannot download worldgen-related tags.
 
 ### Licensed MIT poge
+Thanks Una for help w nio o7

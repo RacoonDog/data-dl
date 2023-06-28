@@ -1,4 +1,4 @@
-package io.github.racoondog.recipedl.util;
+package io.github.racoondog.datadl.util;
 
 import com.google.gson.JsonObject;
 import net.fabricmc.api.EnvType;

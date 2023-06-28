@@ -1,4 +1,4 @@
-package io.github.racoondog.recipedl.util;
+package io.github.racoondog.datadl.util;
 
 public class MutableChar {
     private char c;

@@ -1,12 +1,12 @@
-package io.github.racoondog.recipedl.commands;
+package io.github.racoondog.datadl.commands;
 
 import com.google.gson.JsonObject;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
-import io.github.racoondog.recipedl.DataDL;
-import io.github.racoondog.recipedl.util.FileUtils;
-import io.github.racoondog.recipedl.util.JsonHelper;
+import io.github.racoondog.datadl.DataDL;
+import io.github.racoondog.datadl.util.FileUtils;
+import io.github.racoondog.datadl.util.JsonHelper;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.command.CommandException;
@@ -21,13 +21,10 @@ import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.arg
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
 
 public class AdvancementDLCommand {
-    private static Path cachedPath;
     private static long timeout = 0;
 
     public static void register(CommandDispatcher<FabricClientCommandSource> dispatcher) {
         var builder = literal("advancement");
-
-        builder.then(literal("confirm").executes(AdvancementDLCommand::confirm));
 
         builder.then(literal("run")
                 .executes(AdvancementDLCommand::run)
@@ -37,35 +34,27 @@ public class AdvancementDLCommand {
         dispatcher.register(literal("data-dl").then(builder));
     }
 
-    private static int confirm(CommandContext<FabricClientCommandSource> ctx) {
-        if (timeout + 60000 >= System.currentTimeMillis()) {
-            timeout = 0;
-            run(ctx, cachedPath, true);
-        } else ctx.getSource().sendFeedback(Text.literal("No confirmation prompts in the last minute."));
-        return 1;
-    }
-
     private static int run(CommandContext<FabricClientCommandSource> ctx) {
-        run(ctx, DataDL.ROOT_FOLDER.resolve(DataDL.getWorldName()), false);
+        run(ctx, DataDL.ROOT_FOLDER.resolve(DataDL.getWorldName()));
         return 1;
     }
 
     private static int runCustomFolder(CommandContext<FabricClientCommandSource> ctx) {
-        run(ctx, DataDL.ROOT_FOLDER.resolve(StringArgumentType.getString(ctx, "folder")), false);
+        run(ctx, DataDL.ROOT_FOLDER.resolve(StringArgumentType.getString(ctx, "folder")));
         return 1;
     }
 
-    private static void run(CommandContext<FabricClientCommandSource> ctx, Path dataFolder, boolean force) {
+    private static void run(CommandContext<FabricClientCommandSource> ctx, Path dataFolder) {
         long timer = System.currentTimeMillis();
 
         try {
             if (FileUtils.findSubfolder(dataFolder, "advancements", 2)) {
-                if (force) {
+                if (timeout + 60000 >= System.currentTimeMillis()) {
                     FileUtils.deleteSubfolders(dataFolder, "advancements", 2);
+                    timeout = 0;
                 } else {
-                    ctx.getSource().sendFeedback(Text.literal("Directory already exists. Run '/data-dl advancement confirm' to confirm run."));
+                    ctx.getSource().sendFeedback(Text.literal("Directory already exists. Run to command again to delete the directory and run."));
                     timeout = System.currentTimeMillis();
-                    cachedPath = dataFolder;
                     return;
                 }
             }

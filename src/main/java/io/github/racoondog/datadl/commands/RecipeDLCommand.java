@@ -1,11 +1,11 @@
-package io.github.racoondog.recipedl.commands;
+package io.github.racoondog.datadl.commands;
 
 import com.google.gson.JsonObject;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
-import io.github.racoondog.recipedl.DataDL;
-import io.github.racoondog.recipedl.util.FileUtils;
+import io.github.racoondog.datadl.DataDL;
+import io.github.racoondog.datadl.util.FileUtils;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.command.CommandException;
@@ -20,13 +20,10 @@ import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.lit
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
 
 public class RecipeDLCommand {
-    private static Path cachedPath;
     private static long timeout = 0;
 
     public static void register(CommandDispatcher<FabricClientCommandSource> dispatcher) {
         var builder = literal("recipe");
-
-        builder.then(literal("confirm").executes(RecipeDLCommand::confirm));
 
         builder.then(literal("run")
                 .executes(RecipeDLCommand::run)
@@ -36,35 +33,27 @@ public class RecipeDLCommand {
         dispatcher.register(literal("data-dl").then(builder));
     }
 
-    private static int confirm(CommandContext<FabricClientCommandSource> ctx) {
-        if (timeout + 60000 >= System.currentTimeMillis()) {
-            timeout = 0;
-            run(ctx, cachedPath, true);
-        } else ctx.getSource().sendFeedback(Text.literal("No confirmation prompts in the last minute."));
-        return 1;
-    }
-
     private static int run(CommandContext<FabricClientCommandSource> ctx) {
-        run(ctx, DataDL.ROOT_FOLDER.resolve(DataDL.getWorldName()), false);
+        run(ctx, DataDL.ROOT_FOLDER.resolve(DataDL.getWorldName()));
         return 1;
     }
 
     private static int runCustomFolder(CommandContext<FabricClientCommandSource> ctx) {
-        run(ctx, DataDL.ROOT_FOLDER.resolve(StringArgumentType.getString(ctx, "folder")), false);
+        run(ctx, DataDL.ROOT_FOLDER.resolve(StringArgumentType.getString(ctx, "folder")));
         return 1;
     }
 
-    private static void run(CommandContext<FabricClientCommandSource> ctx, Path dataFolder, boolean force) {
+    private static void run(CommandContext<FabricClientCommandSource> ctx, Path dataFolder) {
         long timer = System.currentTimeMillis();
 
         try {
             if (FileUtils.findSubfolder(dataFolder, "recipes", 2)) {
-                if (force) {
+                if (timeout + 60000 >= System.currentTimeMillis()) {
                     FileUtils.deleteSubfolders(dataFolder, "recipes", 2);
+                    timeout = 0;
                 } else {
-                    ctx.getSource().sendFeedback(Text.literal("Directory already exists. Run '/data-dl recipe confirm' to confirm run."));
+                    ctx.getSource().sendFeedback(Text.literal("Directory already exists. Run to command again to delete the directory and run."));
                     timeout = System.currentTimeMillis();
-                    cachedPath = dataFolder;
                     return;
                 }
             }
@@ -72,9 +61,6 @@ public class RecipeDLCommand {
             e.printStackTrace();
             throw new CommandException(Text.literal("Could not delete directory."));
         }
-
-        ctx.getSource().sendFeedback(Text.literal("Old data deletion took %s ms.".formatted(System.currentTimeMillis() - timer)));
-        timer = System.currentTimeMillis();
 
         MinecraftClient.getInstance().player.getRecipeBook().getOrderedResults().stream().parallel().flatMap(collection -> collection.getAllRecipes().stream()).forEach(recipe -> {
             Path targetFile = getRecipePath(dataFolder, recipe.getId());
@@ -93,9 +79,7 @@ public class RecipeDLCommand {
             }
         });
 
-        ctx.getSource().sendFeedback(Text.literal("New data write took %s ms.".formatted(System.currentTimeMillis() - timer)));
-
-        //ctx.getSource().sendFeedback(Text.literal("Recipe download complete in %s ms.".formatted(System.currentTimeMillis() - timer)));
+        ctx.getSource().sendFeedback(Text.literal("Recipe download complete in %s ms.".formatted(System.currentTimeMillis() - timer)));
     }
 
     private static Path getRecipePath(Path root, Identifier id) {
