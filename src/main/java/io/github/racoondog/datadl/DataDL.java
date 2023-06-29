@@ -3,9 +3,7 @@ package io.github.racoondog.datadl;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.mojang.logging.LogUtils;
-import io.github.racoondog.datadl.commands.AdvancementDLCommand;
-import io.github.racoondog.datadl.commands.RecipeDLCommand;
-import io.github.racoondog.datadl.commands.TagDLCommand;
+import io.github.racoondog.datadl.commands.*;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -25,6 +23,7 @@ public class DataDL implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         ClientCommandRegistrationCallback.EVENT.register(((dispatcher, registryAccess) -> {
+            AllDLCommand.register(dispatcher);
             AdvancementDLCommand.register(dispatcher);
             RecipeDLCommand.register(dispatcher);
             TagDLCommand.register(dispatcher);

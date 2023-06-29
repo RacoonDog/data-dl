@@ -25,10 +25,8 @@ public class RecipeDLCommand {
     public static void register(CommandDispatcher<FabricClientCommandSource> dispatcher) {
         var builder = literal("recipe");
 
-        builder.then(literal("run")
-                .executes(RecipeDLCommand::run)
-                .then(argument("folder", StringArgumentType.word()).executes(RecipeDLCommand::runCustomFolder))
-        );
+        builder.executes(RecipeDLCommand::run)
+                .then(argument("folder", StringArgumentType.word()).executes(RecipeDLCommand::runCustomFolder));
 
         dispatcher.register(literal("data-dl").then(builder));
     }
@@ -62,6 +60,12 @@ public class RecipeDLCommand {
             throw new CommandException(Text.literal("Could not delete directory."));
         }
 
+        download(dataFolder);
+
+        ctx.getSource().sendFeedback(Text.literal("Recipe download complete in %s ms.".formatted(System.currentTimeMillis() - timer)));
+    }
+
+    public static void download(Path dataFolder) {
         MinecraftClient.getInstance().player.getRecipeBook().getOrderedResults().stream().parallel().flatMap(collection -> collection.getAllRecipes().stream()).forEach(recipe -> {
             Path targetFile = getRecipePath(dataFolder, recipe.getId());
 
@@ -78,8 +82,6 @@ public class RecipeDLCommand {
                 e.printStackTrace();
             }
         });
-
-        ctx.getSource().sendFeedback(Text.literal("Recipe download complete in %s ms.".formatted(System.currentTimeMillis() - timer)));
     }
 
     private static Path getRecipePath(Path root, Identifier id) {

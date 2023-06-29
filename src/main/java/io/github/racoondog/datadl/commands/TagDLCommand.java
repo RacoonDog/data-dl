@@ -28,10 +28,8 @@ public class TagDLCommand {
     public static void register(CommandDispatcher<FabricClientCommandSource> dispatcher) {
         var builder = literal("tag");
 
-        builder.then(literal("run")
-                .executes(TagDLCommand::run)
-                .then(argument("folder", StringArgumentType.word()).executes(TagDLCommand::runCustomFolder))
-        );
+        builder.executes(TagDLCommand::run)
+                .then(argument("folder", StringArgumentType.word()).executes(TagDLCommand::runCustomFolder));
 
         dispatcher.register(literal("data-dl").then(builder));
     }
@@ -65,6 +63,12 @@ public class TagDLCommand {
             throw new CommandException(Text.literal("Could not delete directory."));
         }
 
+        download(dataFolder);
+
+        ctx.getSource().sendFeedback(Text.literal("Tag download complete in %s ms.".formatted(System.currentTimeMillis() - timer)));
+    }
+
+    public static void download(Path dataFolder) {
         download(dataFolder, Registries.BANNER_PATTERN, "banner_pattern");
         download(dataFolder, Registries.BLOCK, "blocks");
         download(dataFolder, Registries.CAT_VARIANT, "cat_variant");
@@ -75,8 +79,6 @@ public class TagDLCommand {
         download(dataFolder, Registries.ITEM, "items");
         download(dataFolder, Registries.PAINTING_VARIANT, "painting_variant");
         download(dataFolder, Registries.POINT_OF_INTEREST_TYPE, "point_of_interest_type");
-
-        ctx.getSource().sendFeedback(Text.literal("Tag download complete in %s ms.".formatted(System.currentTimeMillis() - timer)));
     }
 
     private static <T> void download(Path tagFolder, Registry<T> registry, String subfolder) {

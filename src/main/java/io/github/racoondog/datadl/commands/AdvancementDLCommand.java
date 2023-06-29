@@ -26,10 +26,8 @@ public class AdvancementDLCommand {
     public static void register(CommandDispatcher<FabricClientCommandSource> dispatcher) {
         var builder = literal("advancement");
 
-        builder.then(literal("run")
-                .executes(AdvancementDLCommand::run)
-                .then(argument("folder", StringArgumentType.word()).executes(AdvancementDLCommand::runCustomFolder))
-        );
+        builder.executes(AdvancementDLCommand::run)
+                .then(argument("folder", StringArgumentType.word()).executes(AdvancementDLCommand::runCustomFolder));
 
         dispatcher.register(literal("data-dl").then(builder));
     }
@@ -63,6 +61,12 @@ public class AdvancementDLCommand {
             throw new CommandException(Text.literal("Could not delete directory."));
         }
 
+        download(dataFolder);
+
+        ctx.getSource().sendFeedback(Text.literal("Advancement download complete in %s ms.".formatted(System.currentTimeMillis() - timer)));
+    }
+
+    public static void download(Path dataFolder) {
         for (var advancement : MinecraftClient.getInstance().player.networkHandler.getAdvancementHandler().getManager().getAdvancements()) {
             Path targetFile = getAdvancementFile(dataFolder, advancement.getId());
 
@@ -79,8 +83,6 @@ public class AdvancementDLCommand {
                 e.printStackTrace();
             }
         }
-
-        ctx.getSource().sendFeedback(Text.literal("Advancement download complete in %s ms.".formatted(System.currentTimeMillis() - timer)));
     }
 
     private static Path getAdvancementFile(Path root, Identifier id) {
