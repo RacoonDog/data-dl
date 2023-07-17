@@ -9,8 +9,6 @@
     "RecipeMixin",
     "ShapedRecipeMixin",
     "ShapelessRecipeMixin",
-    "SmithingTransformRecipeMixin",
-    "SmithingTrimRecipeMixin",
     "SpecialCraftingRecipeMixin"
   ],
   "injectors": {

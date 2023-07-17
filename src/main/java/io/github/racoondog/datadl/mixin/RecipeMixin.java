@@ -23,7 +23,7 @@ public interface RecipeMixin extends JsonSerializable {
 
     @Shadow RecipeSerializer<?> getSerializer();
 
-    @Shadow ItemStack getOutput(DynamicRegistryManager registryManager);
+    @Shadow ItemStack getOutput();
 
     @Override
     default JsonObject serializeToJson() {
@@ -38,7 +38,7 @@ public interface RecipeMixin extends JsonSerializable {
         }
         try {
             JsonObject result = new JsonObject();
-            result.addProperty("item", Registries.ITEM.getId(getOutput(null).getItem()).toString());
+            result.addProperty("item", Registries.ITEM.getId(getOutput().getItem()).toString());
             object.add("result", result);
         } catch (NullPointerException ignored) {}
         return object;

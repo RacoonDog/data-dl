@@ -48,8 +48,6 @@ public class JsonHelper {
 
         if (advancement.getRewards() != AdvancementRewards.NONE) object.add("rewards", advancement.getRewards().toJson());
 
-        if (advancement.sendsTelemetryEvent()) object.addProperty("sends_telemetary_event", true);
-
         return object;
     }
 }

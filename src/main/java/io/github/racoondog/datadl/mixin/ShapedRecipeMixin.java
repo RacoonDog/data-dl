@@ -24,7 +24,6 @@ public abstract class ShapedRecipeMixin implements CraftingRecipe {
     @Shadow public abstract int getWidth();
     @Shadow public abstract int getHeight();
     @Shadow @Final CraftingRecipeCategory category;
-    @Shadow @Final boolean showNotification;
     @Shadow @Final ItemStack output;
 
     @Override
@@ -33,7 +32,6 @@ public abstract class ShapedRecipeMixin implements CraftingRecipe {
         object.addProperty("type", Registries.RECIPE_SERIALIZER.getId(getSerializer()).toString());
         if (!getGroup().isEmpty()) object.addProperty("group", getGroup());
         if (category != CraftingRecipeCategory.MISC) object.addProperty("category", category.asString());
-        if (!showNotification) object.addProperty("show_notification", false);
 
         // Compute data
         DefaultedList<Ingredient> ingredients = getIngredients();
